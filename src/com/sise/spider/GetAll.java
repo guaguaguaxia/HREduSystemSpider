@@ -14,6 +14,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.sise.bean.Course;
+import com.sise.bean.CourseDetail;
 import com.sise.bean.Messages;
 
 public class GetAll {
@@ -194,16 +196,66 @@ public class GetAll {
 		return course;
 	}
 	
-	public static void getUsualScore(String name,String password) throws IOException{
-		Document doc = getContent(name, password, "http://class.sise.com.cn:7001/sise/module/commonresult/index.jsp?schoolyear=2017&semester=1");
-		String content = doc.toString();
-		System.out.println(content);
+	public static Course getUsualScore(String name,String password) throws IOException{
+//		Document doc = getContent(name, password, "http://class.sise.com.cn:7001/sise/module/commonresult/index.jsp?schoolyear=2017&semester=1");
+//		Elements attTable = doc.select("table").get(4).select("tbody").get(1).select("tr");
+//		System.out.println(attTable.toString());
+		int i = 0;
+//		for(Element e:attTable){
+//			if(i != 0){
+////http://class.sise.com.cn:7001/sise/module/commonresult/showdetails.jsp?courseid=2800&schoolyear=2017&semester=1
+//			    String id = e.select("td").get(0).select("a").first().attr("href").split("=")[1].split("&")[0];
+////			    System.out.println(id);
+//				
+////			    String Coursename = e.select("td").get(0).select("a").first().text();
+////			    System.out.println(Coursename);
+//			    
+////				String coursecode = e.select("td").get(0).select("span").first().text().split(" ")[0];
+////				System.out.println(coursecode);
+//				
+//				String url = "http://class.sise.com.cn:7001/sise/module/commonresult/showdetails.jsp?courseid="+id+"&schoolyear=2017&semester=1";
+//				Document coursedetail = getContent(name, password, url);
+//				
+//			}
+//
+//			i++;
+//		}
+		
+		Course c = new Course();
+		ArrayList<CourseDetail> test = new ArrayList();
+		String url = "http://class.sise.com.cn:7001/sise/module/commonresult/showdetails.jsp?courseid=2800&schoolyear=2017&semester=1";
+		Document coursedetail = getContent(name, password, url);
+		Elements ele = coursedetail.select("table tbody tbody tr");
+		for(Element e:ele){
+			if(i!=0){
+				String[] ss = e.text().split(" ");
+				CourseDetail cd = new CourseDetail();
+				cd.setSource(ss[0]);
+				cd.setPercent(ss[1]);
+				cd.setHighscore(ss[2]);
+				cd.setScore(ss[3]);	
+				test.add(cd);
+				c.setCoursedetails(test);
+				
+			}
+			i++;
+		}
+		return c;
 	}
 
 	public static void main(String[] args) throws IOException {
 		String name = "1540129539";
 		String password = "19960930";
-		getUsualScore(name,password);
+		Course c = getUsualScore(name,password);
+		System.out.println(c.getCoursedetails().get(0).getSource());
+
+//		String s = "作业1 15% 15 13";
+//		String[] ss = s.split(" ");
+//		for(String s1:ss){
+//			System.out.println(s1);
+//		}
+//		Document doc = getContent(name, password, "http://class.sise.com.cn:7001/sise/module/commonresult/showdetails.jsp?courseid=2800&schoolyear=2017&semester=1");
+//		System.out.println(doc);
 //		String[][] course = getCourseDemo(name, password);
 //		for(int i = 0; i < 9;i++){
 //			for(int j = 0; j < 6;j++){
