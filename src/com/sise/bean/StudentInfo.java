@@ -1,6 +1,6 @@
 package com.sise.bean;
 
-public class Messages {
+public class StudentInfo {
 	private String studentNumber;
 	private String SName;
 	private String grade;
